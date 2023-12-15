@@ -1,23 +1,28 @@
+import dummyData from "../data/dummyData.js";
+
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
 // your data.
-
 export const typeDefs = `#graphql
 
     type Game{
         id: ID!
         title: String!
         platform: [String!]!
+        reviews: [Review!]
     }
     type Review{
         id: ID!
         rating: String!
         content: String!
+        game: Game!
+        author: Author!
     }
     type Author{
         id: ID!
         name: String!
         verified: Boolean!
+        reviews: [Review!]
     }
     # This is not optional, very graphql query needs this
     # to define entry point to the graph and specifiy the return types of these entry points 
@@ -31,3 +36,29 @@ export const typeDefs = `#graphql
         author(id: ID!): Author
     }
 `;
+
+// Resolvers define how to fetch the types defined in your schema.
+// This resolver retrieves books from the "books" array above.
+export const resolvers = {
+  Query: {
+    reviews: () => dummyData.reviews,
+    review: (_, args) => {
+      return dummyData.reviews.find((rev) => rev.id === args.id);
+    },
+    authors: () => dummyData.authors,
+    author: (_, args) =>
+      dummyData.authors.find((author) => author.id === args.id),
+    games: () => dummyData.games,
+    game: (_, args) => dummyData.games.find((game) => game.id === args.id),
+  },
+  Game: {
+    reviews(parent) {
+      return dummyData.reviews.filter((rev) => rev.game_id === parent.id);
+    },
+  },
+  Author: {
+    reviews(parent) {
+      return dummyData.reviews.filter((rev) => rev.game_id === parent.id);
+    },
+  },
+};
