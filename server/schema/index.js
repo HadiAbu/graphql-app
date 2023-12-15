@@ -58,7 +58,15 @@ export const resolvers = {
   },
   Author: {
     reviews(parent) {
-      return dummyData.reviews.filter((rev) => rev.game_id === parent.id);
+      return dummyData.reviews.filter((rev) => rev.author_id === parent.id);
+    },
+  },
+  Review: {
+    author(parent) {
+      return dummyData.authors.find((auth) => auth.id === parent.author_id);
+    },
+    game(parent) {
+      return dummyData.games.find((game) => game.id === parent.game_id);
     },
   },
 };
