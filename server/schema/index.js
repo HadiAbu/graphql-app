@@ -1,4 +1,5 @@
 import dummyData from "../data/dummyData.js";
+import { uuid } from "uuidv4";
 
 // A schema is a collection of type definitions (hence "typeDefs")
 // that together define the "shape" of queries that are executed against
@@ -37,8 +38,14 @@ export const typeDefs = `#graphql
     }
 
     type Mutation{
+      addGame(game: AddGameInput!): Game
       deleteGame(id: ID!): [Game]
     }
+
+    input AddGameInput{
+        title: String!
+        platform: [String!]!
+    } 
 `;
 
 // Resolvers define how to fetch the types defined in your schema.
@@ -77,6 +84,11 @@ export const resolvers = {
     deleteGame(_, args) {
       dummyData.games = dummyData.games.filter((game) => game.id !== args.id);
       return dummyData.games;
+    },
+    addGame(_, args) {
+      let game = { ...args, id: crypto.randomUUID().toString() };
+      dummyData.games.push(game);
+      return game;
     },
   },
 };
