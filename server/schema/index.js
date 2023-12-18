@@ -35,6 +35,8 @@ export const typeDefs = `#graphql
         authors: [Author]
         author(id: ID!): Author
     }
+
+    type Mutation{}
 `;
 
 // Resolvers define how to fetch the types defined in your schema.
